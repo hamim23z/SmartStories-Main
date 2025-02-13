@@ -6,11 +6,13 @@ import { useState } from "react";
 import MenuIcon from '@mui/icons-material/Menu';
 
 
-export default function HomePage() {
-  const [openNavDrawer, setOpenNavDrawer] = useState(false);
-  const toggleNavDrawer = (open) => {
-    setOpenNavDrawer(open);
-  }
+export default function SmartHub() {
+
+    /*For the Mobile View - Drawer */
+    const [openNavDrawer, setOpenNavDrawer] = useState(false);
+    const toggleNavDrawer = (open) => {
+        setOpenNavDrawer(open);
+    }
 
   return (
     <>
@@ -30,7 +32,6 @@ export default function HomePage() {
             alignItems: "center",
           }}
         >
-          {/* Hamburger menu icon for mobile (left side) */}
           <Box sx={{ display: { xs: "block", sm: "none" } }}>
             <IconButton
               color="inherit"
@@ -43,7 +44,7 @@ export default function HomePage() {
 
           <Box>
             <Link
-              href="#"
+              href="/"
               style={{
                 textDecoration: "none",
                 color: "white",
@@ -63,7 +64,6 @@ export default function HomePage() {
             </Link>
           </Box>
 
-          {/* Desktop links */}
           <Box
             sx={{
               display: { xs: "none", sm: "flex" },
@@ -71,7 +71,7 @@ export default function HomePage() {
             }}
           >
             <Link
-              href="https://smarttranslate.mintlify.app/introduction"
+              href="#"
               target="_blank"
               style={{
                 textDecoration: "none",
@@ -90,7 +90,7 @@ export default function HomePage() {
             </Link>
 
             <Link
-              href="/smart-hub"
+              href="#"
               style={{
                 textDecoration: "none",
                 color: "white",
@@ -103,7 +103,7 @@ export default function HomePage() {
                   fontWeight: 700,
                 }}
               >
-                Smart Hub
+                The Smart Hub
               </Typography>
             </Link>
           </Box>
@@ -179,7 +179,7 @@ export default function HomePage() {
             sx={{ display: "flex", justifyContent: "center" }}
           >
             <Link
-              href="/smart-hub"
+              href="#"
               style={{
                 textDecoration: "none",
                 color: "white",
