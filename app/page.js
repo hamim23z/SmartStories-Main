@@ -13,7 +13,7 @@ import {
   MenuItem,
   Container,
   Stack,
-  Snackbar
+  Snackbar,
 } from "@mui/material";
 import Link from "next/link";
 import { useState } from "react";
@@ -21,7 +21,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "@/firebase";
 
-const stay_private = [ //this is for the stay private values from dropdown
+const stay_private = [
+  //this is for the stay private values from dropdown
   {
     value: "Yes",
     label: "Yes",
@@ -38,36 +39,40 @@ export default function HomePage() {
     setOpenNavDrawer(open);
   };
 
-  const [name, setName] = useState("");
-  const [age, setAge] = useState("");
-  const [location, setLocation] = useState("");
-  const [story, setStory] = useState("");
-  const [stayPrivate, setStayPrivate] = useState("No");
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const [formData, setFormData] = useState({
+    name: "",
+    age: "",
+    location: "",
+    story: "",
+    stayPrivate: "No",
+  });
 
-    const response = await fetch("/api/submitStory", {
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    console.log(formData);
+
+    const response = await fetch("/api/submit-story", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, age, location, story, stayPrivate })
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
     });
 
-    const data = await response.json();
     if (response.ok) {
-      alert("Story submitted successfully!");
-      // Clear form
-      setName("");
-      setAge("");
-      setLocation("");
-      setStory("");
-      setStayPrivate("No");
+      setSnackbarMessage("Story submitted successfully!");
+      setOpenSnackbar(true);
     } else {
-      alert("Error submitting story: " + data.error);
+      setSnackbarMessage("Error submitting story.");
+      setOpenSnackbar(true);
     }
   };
 
-  {/*NewsLetter*/ }
+
+  {/*NewsLetter*/}
   const [snackbarOpenNews, setSnackbarOpenNews] = useState(false);
   const [emailNews, setEmailNews] = useState("");
   const [emailErrorNews, setEmailErrorNews] = useState("");
@@ -323,6 +328,32 @@ export default function HomePage() {
           paddingBottom: "100px",
         }}
       >
+        <Box>
+          <Typography
+            variant="h4"
+            sx={{
+              fontFamily: "Kanit",
+              textTransform: "uppercase",
+              color: "white",
+              fontWeight: 900,
+              paddingBottom: "15px",
+            }}
+          >
+            Smart Stories
+          </Typography>
+          <Typography
+            variant="h4"
+            sx={{
+              fontFamily: "Kanit",
+              textTransform: "uppercase",
+              color: "white",
+              paddingBottom: "40px",
+              fontWeight: 900,
+            }}
+          >
+            Let your story be heard
+          </Typography>
+        </Box>
         <Box
           sx={{
             display: "flex",
@@ -334,48 +365,74 @@ export default function HomePage() {
           <TextField
             label="Name"
             variant="filled"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             sx={{
               backgroundColor: "#fff",
               borderRadius: "10px",
               fontFamily: "Kanit",
               fontFamily: "Kanit",
               "& .MuiInputBase-root": { fontFamily: "Kanit", fontWeight: 500 },
-              "& .MuiInputLabel-root": { fontFamily: "Kanit", fontWeight: 500, color: "green" },
+              "& .MuiInputLabel-root": {
+                fontFamily: "Kanit",
+                fontWeight: 500,
+                color: "green",
+              },
               "& .MuiFilledInput-underline:before": { borderBottom: "none" },
               "& .MuiFilledInput-underline:after": { borderBottom: "none" },
-              "&:hover .MuiFilledInput-underline:before": { borderBottom: "none" }
+              "&:hover .MuiFilledInput-underline:before": {
+                borderBottom: "none",
+              },
             }}
           />
 
           <TextField
             label="Age"
             variant="filled"
+            value={formData.age}
+            onChange={(e) => setFormData({ ...formData, age: e.target.value })}
             required
             sx={{
               backgroundColor: "#fff",
               borderRadius: "10px",
               fontFamily: "Kanit",
               "& .MuiInputBase-root": { fontFamily: "Kanit", fontWeight: 500 },
-              "& .MuiInputLabel-root": { fontFamily: "Kanit", fontWeight: 500, color: "green" },
+              "& .MuiInputLabel-root": {
+                fontFamily: "Kanit",
+                fontWeight: 500,
+                color: "green",
+              },
               "& .MuiFilledInput-underline:before": { borderBottom: "none" },
               "& .MuiFilledInput-underline:after": { borderBottom: "none" },
-              "&:hover .MuiFilledInput-underline:before": { borderBottom: "none" }
+              "&:hover .MuiFilledInput-underline:before": {
+                borderBottom: "none",
+              },
             }}
           />
 
           <TextField
             label="Location"
             variant="filled"
+            value={formData.location}
+            onChange={(e) =>
+              setFormData({ ...formData, location: e.target.value })
+            }
             required
             sx={{
               backgroundColor: "#fff",
               borderRadius: "10px",
               fontFamily: "Kanit",
               "& .MuiInputBase-root": { fontFamily: "Kanit", fontWeight: 500 },
-              "& .MuiInputLabel-root": { fontFamily: "Kanit", fontWeight: 500, color: "green" },
+              "& .MuiInputLabel-root": {
+                fontFamily: "Kanit",
+                fontWeight: 500,
+                color: "green",
+              },
               "& .MuiFilledInput-underline:before": { borderBottom: "none" },
               "& .MuiFilledInput-underline:after": { borderBottom: "none" },
-              "&:hover .MuiFilledInput-underline:before": { borderBottom: "none" }
+              "&:hover .MuiFilledInput-underline:before": {
+                borderBottom: "none",
+              },
             }}
           />
 
@@ -384,18 +441,26 @@ export default function HomePage() {
             select
             label="Stay Private?"
             required
-            value={stayPrivate}
-            onChange={(e) => setStayPrivate(e.target.value)}
+            value={formData.stayPrivate}
+            onChange={(e) =>
+              setFormData({ ...formData, stayPrivate: e.target.value })
+            }
             sx={{
               backgroundColor: "#fff",
               borderRadius: "10px",
               width: "200px",
               fontFamily: "Kanit",
               "& .MuiInputBase-root": { fontFamily: "Kanit", fontWeight: 500 },
-              "& .MuiInputLabel-root": { fontFamily: "Kanit", fontWeight: 500, color: "green" },
+              "& .MuiInputLabel-root": {
+                fontFamily: "Kanit",
+                fontWeight: 500,
+                color: "green",
+              },
               "& .MuiFilledInput-underline:before": { borderBottom: "none" },
               "& .MuiFilledInput-underline:after": { borderBottom: "none" },
-              "&:hover .MuiFilledInput-underline:before": { borderBottom: "none" }
+              "&:hover .MuiFilledInput-underline:before": {
+                borderBottom: "none",
+              },
             }}
           >
             {stay_private.map((option) => (
@@ -410,6 +475,10 @@ export default function HomePage() {
           <TextField
             label="Story"
             variant="filled"
+            value={formData.story}
+            onChange={(e) =>
+              setFormData({ ...formData, story: e.target.value })
+            }
             required
             multiline
             rows={15}
@@ -419,17 +488,29 @@ export default function HomePage() {
               width: "900px",
               fontFamily: "Kanit",
               "& .MuiInputBase-root": { fontFamily: "Kanit", fontWeight: 500 },
-              "& .MuiInputLabel-root": { fontFamily: "Kanit", fontWeight: 500, color: "green" },
+              "& .MuiInputLabel-root": {
+                fontFamily: "Kanit",
+                fontWeight: 500,
+                color: "green",
+                "&.Mui-focused": {
+                  color: "#1976d2",
+                },
+              },
               "& .MuiFilledInput-underline:before": { borderBottom: "none" },
               "& .MuiFilledInput-underline:after": { borderBottom: "none" },
-              "&:hover .MuiFilledInput-underline:before": { borderBottom: "none" }
+              "&:hover .MuiFilledInput-underline:before": {
+                borderBottom: "none",
+              },
             }}
           />
 
-          <Box sx={{
-            paddingTop: "50px"
-          }}>
+          <Box
+            sx={{
+              paddingTop: "50px",
+            }}
+          >
             <Button
+              onClick={handleSubmit}
               variant="contained"
               sx={{
                 borderRadius: "10px",
@@ -439,8 +520,17 @@ export default function HomePage() {
                   background: "rgb(35, 88, 187)",
                 },
               }}
-            >Submit Story</Button>
+            >
+              Submit Story
+            </Button>
           </Box>
+
+          <Snackbar
+            open={openSnackbar}
+            autoHideDuration={3000}
+            onClose={() => setOpenSnackbar(false)}
+            message="Your story has been received, thank you!"
+          ></Snackbar>
         </Box>
       </Box>
 
